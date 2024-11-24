@@ -1,3 +1,4 @@
+import copy
 import psycopg2
 from qgis.core import QgsPointXY, QgsProject, QgsGeometry, QgsVectorLayer, QgsFeature, QgsField, QgsSymbol
 from PyQt5.QtCore import QVariant
@@ -50,16 +51,24 @@ def expandir(ruta):
     ORDER BY distance
     LIMIT 2;
     """
-    
+
+    new_routes = []
+
     cur.execute(query)
     rows = cur.fetchall()
 
     next_point = None
     prev_point = None
     if len(rows) > 0:
-        next_point = QgsGeometry.fromWkt(rows[0][1]).asPoint()
+        next_point = rows[0][0]
+        r = copy.deepcopy(ruta)
+        r.subroutes[0].add_route(next_point)
+        new_routes.append(r)
     if len(rows) > 1:
-        prev_point = QgsGeometry.fromWkt(rows[1][1]).asPoint()
+        prev_point = rows[1][0]
+        r = copy.deepcopy(ruta)
+        r.subroutes[0].add_route(prev_point)
+        new_routes.append(r)
 
     # Buscar puntos en otras capas dentro de un radio de 250 metros
     layers = ["red1_puntos", "red2_puntos", "red3_puntos"]
@@ -75,36 +84,15 @@ def expandir(ruta):
             cur.execute(query)
             rows = cur.fetchall()
             for row in rows:
-                geom = QgsGeometry.fromWkt(row[1])
-                if geom.isMultipart():
-                    points = geom.asMultiPoint()
-                else:
-                    points = [geom.asPoint()]
-                for point in points:
-                    other_points.append((row[0], layer_name, point))
+                id = row[0]
+                new_subroute = Subroute(id, layer_name)
+                r = copy.deepcopy(ruta)
+                r.add_subroute(new_subroute)
+                new_routes.append(r)
 
     # Cerrar la conexión a la base de datos
     cur.close()
     conn.close()
-
-    # Crear nuevas rutas basadas en next_point y prev_point
-    new_routes = []
-    if next_point:
-        new_subroute = Subroute(next_point, ruta.subroutes[0].net)
-        print(new_subroute)
-        new_route = Route(ruta.subroutes + [new_subroute])
-        new_routes.append(new_route)
-
-    if prev_point:
-        new_subroute = Subroute(prev_point, ruta.subroutes[0].net)
-        new_route = Route(ruta.subroutes + [new_subroute])
-        new_routes.append(new_route)
-
-    if other_points:
-        for point in other_points:
-            new_subroute = Subroute(point, layer_name)
-            new_route = ruta.add_subroute(new_subroute)
-            new_routes.append(new_route)
 
     return new_routes
 
