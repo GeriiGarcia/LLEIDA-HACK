@@ -70,7 +70,8 @@ def points2paths(point, paths):
         
     min_distance = min(dist)
     nearest_point = nearest_points[dist.index(min_distance)]
-    return nearest_point
+    # return nearest_point, path
+    return nearest_point, paths[dist.index(min_distance)]
 
 def calcular_distancia(point1, crs1, point2, crs2, crs_destino):
     """
@@ -150,7 +151,8 @@ for inicio_feature in inicio_features:
     puntos_layer_data.addFeature(new_inicio_feature)
 
     # Encontrar el punto de la línea más cercana
-    nearest_line_point = points2paths(inicio_point, ["red3", "red2", "red1"])
+    nearest_line_point, path = points2paths(inicio_point, ["red3", "red2", "red1"])
+    print(nearest_line_point, path)
 
     # Añadir el punto de la línea más cercana a la capa
     nearest_line_feature = QgsFeature()
@@ -171,7 +173,8 @@ for final_feature in final_features:
     puntos_layer_data.addFeature(new_final_feature)
 
     # Encontrar el punto de la línea más cercana
-    nearest_line_point = points2paths(final_point, ["red3", "red2", "red1"])
+    nearest_line_point, path = points2paths(final_point, ["red3", "red2", "red1"])
+    print(nearest_line_point, path)
 
     # Añadir el punto de la línea más cercana a la capa
     nearest_line_feature = QgsFeature()
