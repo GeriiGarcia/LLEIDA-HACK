@@ -1,4 +1,4 @@
-import db_connect as db
+from python_functions import db_connect as db
 import psycopg2
 from qgis.core import QgsPointXY, QgsProject, QgsGeometry, QgsVectorLayer, QgsFeature, QgsField, QgsSymbol
 from PyQt5.QtCore import QVariant

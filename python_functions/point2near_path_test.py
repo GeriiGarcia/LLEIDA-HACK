@@ -1,6 +1,6 @@
 from qgis.core import QgsProject, QgsMapLayer, QgsWkbTypes, QgsVectorLayer, QgsFeature, QgsGeometry, QgsPoint, QgsField, QgsPointXY, QgsCoordinateTransform, QgsCoordinateReferenceSystem
 from PyQt5.QtCore import QVariant
-import db_connect as bd
+from python_functions import db_connect as bd
 
 def point2path(point, path):
     """
