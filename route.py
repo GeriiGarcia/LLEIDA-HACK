@@ -13,6 +13,8 @@ class Route:
         self.last = self.subroutes[-1].last
         if len(self.subroutes) >= 2:
             self.penultimate = self.subroutes[-1].penultimate
+        else:
+            self.penultimate = []
 
         # Heuristic cost
         self.h = 0
@@ -36,7 +38,6 @@ class Route:
     def add_subroute(self, children):
         # Adding a new station to the route list
         self.subroute.append(children)
-    def get_route_key(self):
-        return str(self.head) + str(self.subroutes[0].net) 
+
     def __repr__(self):
-        return f"<Route {self.name} {self.path} {self.method}>"
+        return f"<Route {self.subroutes}>"

@@ -90,6 +90,7 @@ def expandir(ruta):
     new_routes = []
     if next_point:
         new_subroute = Subroute(next_point, ruta.subroutes[0].net)
+        print(new_subroute)
         new_route = Route(ruta.subroutes + [new_subroute])
         new_routes.append(new_route)
 
@@ -101,7 +102,7 @@ def expandir(ruta):
     if other_points:
         for point in other_points:
             new_subroute = Subroute(point, layer_name)
-            new_route = Route(ruta.subroutes + [new_subroute])
+            new_route = ruta.add_subroute(new_subroute)
             new_routes.append(new_route)
 
     return new_routes

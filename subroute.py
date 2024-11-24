@@ -23,6 +23,8 @@ class Subroute:
         self.last = self.path[-1]
         if len(self.path) >= 2:
             self.penultimate = self.path[-2]
+        else:
+            self.penultimate = []
         # Real cost
         self.g = 0
     
@@ -42,4 +44,4 @@ class Subroute:
 
 
     def __repr__(self):
-        return f"<Subroute {self.name} {self.path} {self.method}>"
+        return f"<Subroute {self.path}>"
