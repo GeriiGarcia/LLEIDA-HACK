@@ -5,17 +5,23 @@ Código principal algoritmo A-star
 
 from qgis.core import QgsPointXY
 
+from route import Route
+
+
+
 def main():
     
     # Calcular el nodo origen a partir de los inputs
     # origin_point = QgsPointXY() perteneciente a una red
-    origin_net, origin_node = point2near_path(origin_point)
+    redes = ['red1', 'red2', 'red3']
+    origin_net, origin_node = point2near_path(origin_point, redes)
+
     dest_net, destination_node = point2near_path(destination_point)
 
     path_list = [Route(origin_node, origin_net)]
     visited_stations_cost = {}
     while path_list != []:
-        if path_list[0].last != destination_id:
+        if path_list[0].last != destination_node:
 
             # Sacar el primer punto de la primera geometría
             first = path_list.pop(0)
