@@ -17,6 +17,10 @@ from python_functions.insert_cost_f import insert_cost_f
 
 from remove_redundant_paths import remove_redundant_paths
 
+import math
+import psycopg2
+from shapely import LineString, Point
+
 pesos = [3,5,10]
 
 def main():
@@ -24,12 +28,12 @@ def main():
     
     # Calcular el nodo origen a partir de los inputs
     # origin_point = QgsPointXY() perteneciente a una red
-    project = QgsProject.instance()
-    layers = project.mapLayers().values()
-    print("Capas cargadas:", layers)
+    #project = QgsProject.instance()
+    #layers = project.mapLayers().values()
+    #print("Capas cargadas:", layers)
     
-    inicio = project.mapLayersByName('inicio')
-    final = project.mapLayersByName('final')
+    #inicio = project.mapLayersByName('inicio')
+    #final = project.mapLayersByName('final')
     #print("Capas inicio y final:", inicio, final)
 
     # origin_point = inicio[0].getFeatures().next().geometry().asPoint()
@@ -42,24 +46,31 @@ def main():
     # print(dest_net, destination_node)
 
     origin_net = 'red3'
-    origin_node = 353
+    origin_node = 354
     dest_net = 'red3'
     destination_node = 771  
 
     path_list = [Route(Subroute(origin_node, origin_net))]
     visited_stations_cost = {}
+    j = 0
     
-    while path_list != []:
-        print("hola en el bucle while")
+    while path_list != [] and j < 3:
+        
         
         if path_list[0].last != destination_node:
-            print("Expandiendo el primer punto")
+            
             # Sacar el primer punto de la primera geometría
             first = path_list.pop(0)
+            print(first)
+
 
             # Expandir el primer punto
             # Lista de nodos próximos (2 o más)
             exp = expand(first)
+
+            for k in exp:
+                print(k)
+
             rem = remove_cycles(exp)
 
             add_cost = calculate_cost(rem)
@@ -77,6 +88,12 @@ def main():
 
             # Insertar las rutas expandidas en la lista de rutas a ser expandidas
             path_list = insert_cost_f(f, path_list)
+
+            #print("Lista de rutas:-------------------------------------")
+            #for i in path_list:
+            #    print(i)
+
+            j = j + 1
             
         else:
             print("Ruta encontrada")

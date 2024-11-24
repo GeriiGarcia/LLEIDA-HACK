@@ -39,6 +39,10 @@ class Route:
         # Adding a new station to the route list
         self.subroutes.append(children)
 
+    def get_route_key(self):
+        # Devuelve una clave única para la ruta basada en los nodos de la subruta
+        return tuple(subroute.last for subroute in self.subroutes)
+
     def __repr__(self):
         subroutes_str = " -> ".join([str(subroute) for subroute in self.subroutes])
         return f"<Route head={self.head}, last={self.last}, penultimate={self.penultimate}, subroutes=[{subroutes_str}]>"

@@ -41,6 +41,7 @@ class Subroute:
         self.path.append(children)
         self.penultimate = self.path[-2]
         self.last = self.path[-1]
+        self.head = self.last
 
 
     def __repr__(self):

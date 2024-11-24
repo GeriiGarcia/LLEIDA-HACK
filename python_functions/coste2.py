@@ -1,6 +1,12 @@
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsGeometry, QgsFeature, QgsVectorLayer, QgsPointXY, QgsField, QgsWkbTypes
 from PyQt5.QtCore import QVariant
 from python_functions import db_connect as db
+from Jan_files.funcio_costos_mig_bona import get_cost
+
+from shapely import LineString, Point
+from shapely.wkt import loads
+
+
 
 def point2path(point, path):
     """
@@ -66,21 +72,13 @@ def calculate_cost(routes):
     """
 
     for route in routes:
-        total_cost = 0
-        for subroute in route.subroutes:
-            if subroute.net == 1:
-                coste_por_metro = 3
-            elif subroute.net == 2:
-                coste_por_metro = 5
-            elif subroute.net == 3:
-                coste_por_metro = 10
+        
+        id_origen = route.head
+        id_destino = route.subroutes[0].path[1]
+        nombre_red = route.subroutes[0].net
 
-            for i in range(len(subroute.path) - 1):
-                punto_inicio = get_coords_from_id(subroute.path[i], subroute.net)
-                punto_fin = get_coords_from_id(subroute.path[i + 1], subroute.net)
-                punto_inicio_geom = point2path(punto_inicio, subroute.net)
-                punto_fin_geom = point2path(punto_fin, subroute.net)
-                distancia_euclidiana = punto_inicio_geom.distance(punto_fin_geom)
-                total_cost += distancia_euclidiana * coste_por_metro
-        route.g = total_cost
+        cost = get_cost(id_origen, id_destino, nombre_red)
+
+            
+        route.g = route.head.g + cost
     return routes
