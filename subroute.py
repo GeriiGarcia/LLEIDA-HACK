@@ -13,32 +13,32 @@ Atr:
 class Subroute:
     def __init__(self, node, net):
         if type(node) is list:
-            self.route = node
+            self.path = node
         else:
-            self.route = [node]
+            self.path = [node]
 
         self.net = net
 
-        self.head = self.route[0]
-        self.last = self.route[-1]
-        if len(self.route) >= 2:
-            self.penultimate = self.route[-2]
+        self.head = self.path[0]
+        self.last = self.path[-1]
+        if len(self.path) >= 2:
+            self.penultimate = self.path[-2]
         # Real cost
         self.g = 0
     
 
     def __eq__(self, other):
         if other is not None:
-            return self.route == other.route
+            return self.path == other.path
 
     def update_g(self, g):
         self.g += g
 
     def add_route(self, children):
         # Adding a new station to the route list
-        self.route.append(children)
-        self.penultimate = self.route[-2]
-        self.last = self.route[-1]
+        self.path.append(children)
+        self.penultimate = self.path[-2]
+        self.last = self.path[-1]
 
 
     def __repr__(self):
