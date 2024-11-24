@@ -1,10 +1,11 @@
-import db_connect as db
 import psycopg2
 from qgis.core import QgsPointXY, QgsProject, QgsGeometry, QgsVectorLayer, QgsFeature, QgsField, QgsSymbol
 from PyQt5.QtCore import QVariant
 from PyQt5.QtGui import QColor
 from route import Route
 from subroute import Subroute
+
+from python_functions import db_connect as db
 
 def get_coords_from_id(id, layer_name):
     conn, cur = db.connect_to_db()
@@ -34,7 +35,7 @@ def expandir(ruta):
 
     # Convertir QgsPointXY a WKT
     point_wkt = f"POINT({qgspointxy.x()} {qgspointxy.y()})"
-    print(point_wkt)
+    
 
     # Encontrar el siguiente y anterior punto más cercano en la misma capa
     query = f"""
@@ -107,11 +108,3 @@ def expandir(ruta):
 
     return new_routes
 
-# Ejemplo de uso
-start_point = QgsPointXY(453113.747931, 4212144.949761)
-subroute = Subroute(23160, "red3")
-ruta = Route([subroute])
-
-result = expandir(ruta)
-for route in result:
-    print(route)

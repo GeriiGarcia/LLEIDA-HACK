@@ -12,9 +12,9 @@ class Route:
         self.head = self.subroutes[0].head
         self.last = self.subroutes[-1].last
         if len(self.subroutes) >= 2:
-            self.penultimate = self.subroutes[-1].penultimate
+            self.penultimate = self.subroutes[-2].last
         else:
-            self.penultimate = []
+            self.penultimate = None
 
         # Heuristic cost
         self.h = 0
@@ -24,20 +24,21 @@ class Route:
 
     def __eq__(self, other):
         if other is not None:
-            return self.subroute == other.subroute
+            return self.subroutes == other.subroutes
         
     def get_cost(self):
-        return sum(self.subroutes.g)
+        return sum(subroute.g for subroute in self.subroutes)
 
     def update_h(self, h):
         self.h = h
 
     def update_f(self):
-        self.f = sum(self.subroutes.g) + self.h
+        self.f = self.get_cost() + self.h
 
     def add_subroute(self, children):
         # Adding a new station to the route list
-        self.subroute.append(children)
+        self.subroutes.append(children)
 
     def __repr__(self):
-        return f"<Route {self.subroutes}>"
+        subroutes_str = " -> ".join([str(subroute) for subroute in self.subroutes])
+        return f"<Route head={self.head}, last={self.last}, penultimate={self.penultimate}, subroutes=[{subroutes_str}]>"
