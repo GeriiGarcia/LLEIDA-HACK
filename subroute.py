@@ -39,9 +39,9 @@ class Subroute:
     def add_route(self, children):
         # Adding a new station to the route list
         self.path.append(children)
-        self.penultimate = self.path[-2]
-        self.last = self.path[-1]
-        self.head = self.last
+        self.penultimate = self.path[1]
+        self.last = self.path[0]
+        self.head = self.path[-1]
 
 
     def __repr__(self):

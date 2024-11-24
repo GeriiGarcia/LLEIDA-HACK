@@ -1,7 +1,7 @@
 """
 Código principal algoritmo A-star
 """
-
+ 
 from qgis.core import QgsPointXY, QgsProject, QgsGeometry, QgsFeature, QgsField, QgsVectorLayer, QgsWkbTypes
 
 from route import Route
@@ -10,7 +10,7 @@ from subroute import Subroute
 from python_functions.expandir import expandir as expand
 from python_functions.remove_cycles import remove_cycles
 from python_functions.coste2 import calculate_cost as calculate_cost
-
+  
 from python_functions.calculate_heuristics import calculate_heuristics
 from python_functions.update_f import update_f
 from python_functions.insert_cost_f import insert_cost_f
@@ -19,7 +19,7 @@ from remove_redundant_paths import remove_redundant_paths
 
 import math
 import psycopg2
-from shapely import LineString, Point
+
 
 pesos = [3,5,10]
 
@@ -46,18 +46,18 @@ def main():
     # print(dest_net, destination_node)
 
     origin_net = 'red3'
-    origin_node = 354
+    origin_node = 23417
     dest_net = 'red3'
-    destination_node = 771  
+    destination_node = 23418
 
     path_list = [Route(Subroute(origin_node, origin_net))]
     visited_stations_cost = {}
     j = 0
     
-    while path_list != [] and j < 3:
+    while path_list != [] and j < 300:
+        print("Iteración:", j)
         
-        
-        if path_list[0].last != destination_node:
+        if path_list[-1].subroutes[0].head != destination_node:
             
             # Sacar el primer punto de la primera geometría
             first = path_list.pop(0)
@@ -101,4 +101,8 @@ def main():
     print("No se encontró ninguna ruta")
     return []
 
-main()
+
+ruta = main()
+
+if ruta:
+    print(ruta.g)

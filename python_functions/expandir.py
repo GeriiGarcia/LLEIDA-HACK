@@ -97,13 +97,13 @@ def expandir(ruta):
     new_routes = []
     if next_point:
         ruta_copy = copy.deepcopy(ruta)
-        ruta_copy.subroutes[0].path.append(next_point)
+        ruta_copy.subroutes[0].add_route(next_point)
         new_routes.append(ruta_copy)
 
     if prev_point:
         ruta_copy = copy.deepcopy(ruta)
-        ruta_copy.subroutes[0].path.append(prev_point)
+        ruta_copy.subroutes[0].add_route(prev_point)
         new_routes.append(ruta_copy)
-
+    
     return new_routes
 

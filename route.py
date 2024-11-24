@@ -9,10 +9,8 @@ class Route:
         else:
             self.subroutes = [subroute]
 
-        self.head = self.subroutes[0].head
-        self.last = self.subroutes[-1].last
         if len(self.subroutes) >= 2:
-            self.penultimate = self.subroutes[-2].last
+            self.penultimate = self.subroutes[1].last
         else:
             self.penultimate = None
 

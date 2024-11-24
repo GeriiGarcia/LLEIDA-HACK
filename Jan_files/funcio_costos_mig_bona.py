@@ -1,6 +1,6 @@
 import math
 import psycopg2
-from shapely import LineString, Point
+from shapely.geometry import LineString, Point
 from shapely.wkt import loads
 
 def connect_to_db():
