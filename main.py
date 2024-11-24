@@ -18,6 +18,9 @@ from python_functions.update_f import update_f
 from python_functions.insert_cost_f import insert_cost_f
 
 
+from remove_redundant_paths import remove_redundant_paths
+
+
 
 def main():
     
