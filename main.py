@@ -3,9 +3,11 @@ Código principal algoritmo A-star
 
 """
 
-from qgis.core import QgsPointXY
+from qgis.core import QgsPointXY, QgsProject, QgsGeometry, QgsFeature, QgsField, QgsVectorLayer, QgsWkbTypes
 
 from route import Route
+import python_functions.point2near_path_test as p2np
+from subroute import Subroute
 
 
 
@@ -13,12 +15,19 @@ def main():
     
     # Calcular el nodo origen a partir de los inputs
     # origin_point = QgsPointXY() perteneciente a una red
+    project = QgsProject.instance()
+    layers = project.mapLayers().values()
+    inicio = layers.mapLayersByName('inicio')
+    origin_point = inicio[0].getFeatures().next().geometry().asPoint()
+    final = project.mapLayersByName('final')
+    destination_point = final[0].getFeatures().next().geometry().asPoint()
     redes = ['red1', 'red2', 'red3']
-    origin_net, origin_node = point2near_path(origin_point, redes)
+    origin_net, origin_node = p2np.point2near_path(origin_point, redes)
+    print(origin_net, origin_node)
+    dest_net, destination_node = p2np.point2near_path(destination_point, redes)
+    print(dest_net, destination_node)
 
-    dest_net, destination_node = point2near_path(destination_point)
-
-    path_list = [Route(origin_node, origin_net)]
+    path_list = [Route(Subroute(origin_node, origin_net))]
     visited_stations_cost = {}
     while path_list != []:
         if path_list[0].last != destination_node:
