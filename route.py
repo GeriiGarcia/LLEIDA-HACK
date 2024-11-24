@@ -23,6 +23,9 @@ class Route:
     def __eq__(self, other):
         if other is not None:
             return self.subroute == other.subroute
+        
+    def get_cost(self):
+        return sum(self.subroutes.g)
 
     def update_h(self, h):
         self.h = h

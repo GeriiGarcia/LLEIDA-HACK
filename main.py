@@ -9,6 +9,14 @@ from route import Route
 import python_functions.point2near_path_test as p2np
 from subroute import Subroute
 
+from python_functions.expand import expand
+from python_functions.remove_cycles import remove_cycles
+from python_functions.calculate_cost import calculate_cost
+from python_functions.remove_redundant_paths import remove_redundant_paths
+from python_functions.calculate_heuristics import calculate_heuristics
+from python_functions.update_f import update_f
+from python_functions.insert_cost_f import insert_cost_f
+
 
 
 def main():
@@ -48,7 +56,7 @@ def main():
             new_expand, path_list, visited_stations_cost = remove_redundant_paths(add_cost, path_list, visited_stations_cost)
 
             # Calcular la heurística de las rutas expandidas
-            heu = calculate_heuristics(new_expand, destination_node)
+            heu = calculate_heuristics(new_expand, destination_node, dest_net)
 
             # Actualizar el valor de f de las rutas expandidas
             f = update_f(heu)
@@ -59,13 +67,6 @@ def main():
         else:
             return path_list[0]
     return []
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
