@@ -1,26 +1,48 @@
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsGeometry, QgsFeature, QgsVectorLayer, QgsPointXY, QgsField, QgsWkbTypes
 from PyQt5.QtCore import QVariant
+import db_connect as db
 
 # Obtener el proyecto actual
 project = QgsProject.instance()
 
-def calcular_coste(punto_inicio, punto_fin, red, coste_por_metro):
+def get_coords_from_id(id, layer_name):
+    conn, cur = db.connect_to_db()
+    query = f"""
+    SELECT ST_AsText(geom) AS geom_wkt
+    FROM eps.{layer_name}_puntos
+    WHERE id = {id};
+    """
+    cur.execute(query)
+    row = cur.fetchone()
+    geom = QgsGeometry.fromWkt(row[0])
+    point = geom.asPoint()
+    cur.close()
+    conn.close()
+    return point
+
+def calcular_coste(id_origen, id_destino, nombre_red, coste_por_metro):
     """
     Calcular el coste entre dos puntos en una red.
 
-    :param punto_inicio: Coordenadas del punto de inicio (QgsPointXY)
-    :param punto_fin: Coordenadas del punto de fin (QgsPointXY)
-    :param red: Capa de la red (QgsVectorLayer)
+    :param id_origen: ID del punto de inicio (int)
+    :param id_destino: ID del punto de fin (int)
+    :param nombre_red: Nombre de la capa de la red (str)
     :param coste_por_metro: Coste por metro recorrido (float)
     :return: Coste total calculado (float)
 
     :Example:
-    >>> punto_inicio = QgsPointXY(279199.23649999964982271, 4110101.92349999956786633)
-    >>> punto_fin = QgsPointXY(279513.26609999965876341, 4109468.53299999982118607)
-    >>> red1 = project.mapLayersByName("red1")[0]
+    >>> id_origen = 1
+    >>> id_destino = 2
+    >>> nombre_red = "red1"
     >>> coste_por_metro = 3
-    >>> calcular_coste(punto_inicio, punto_fin, red1, coste_por_metro)
+    >>> calcular_coste(id_origen, id_destino, nombre_red, coste_por_metro)
     """
+    punto_inicio = get_coords_from_id(id_origen, nombre_red)
+    print(punto_inicio)
+    punto_fin = get_coords_from_id(id_destino, nombre_red)
+    print(punto_fin)
+    red = project.mapLayersByName(nombre_red)[0]
+
     # Verificar que la capa tenga geometría de línea
     if red.geometryType() != QgsWkbTypes.LineGeometry:
         raise TypeError("La capa red no tiene geometría de líneas.")
@@ -79,4 +101,12 @@ def calcular_coste(punto_inicio, punto_fin, red, coste_por_metro):
     print(f"El coste total es: {coste_total:.2f}")
     return coste_total
 
+# Configurar el entorno de prueba
+project = QgsProject.instance()
+id_origen = 632
+id_destino = 1043
+nombre_red = "red1"
+coste_por_metro = 3
 
+# Probar la función calcular_coste
+coste_total = calcular_coste(id_origen, id_destino, nombre_red, coste_por_metro)
